@@ -11,7 +11,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://localhost/daatabase', function(error){
+mongoose.connect('mongodb://dimaSavchenko:123@ds047468.mlab.com:47468/heroku_1jr2bppx', function(error){
     console.log('connect to mongo');
     if(error) {
         console.log(error);
