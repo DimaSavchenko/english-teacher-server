@@ -29,6 +29,7 @@ router.get('/', function(req, res) {
 
 router.route('/rating')
     .post(function(req, res) {
+
         Rating.find({word: req.body.word}, function(error, doc){
             if(doc.length == 0) {
                 var newRating = new Rating();
