@@ -29,35 +29,35 @@ router.get('/', function(req, res) {
 
 router.route('/rating')
     .post(function(req, res) {
+        for(var index in req.body) {
+            var ratingReq = req.body[index];
+            Rating.find({word: ratingReq.word}, function(error, doc){
+                if(doc.length == 0) {
+                    var newRating = new Rating();
+                    newRating.word = ratingReq.word;
+                    newRating.rating = ratingReq.rating;
+                    newRating.number = 1;
+                    newRating.save(function(error) {
+                        if (error) {
+                            res.send(500, error);
+                        }
+                    });
+                }else {
+                    var updateRating = doc[0];
 
-        Rating.find({word: req.body.word}, function(error, doc){
-            if(doc.length == 0) {
-                var newRating = new Rating();
-                newRating.word = req.body.word;
-                newRating.rating = req.body.rating;
-                newRating.number = 1;
-                newRating.save(function(error) {
-                    if (error) {
-                        res.send(500, error);
-                    }
+                    updateRating.rating = (updateRating.rating * updateRating.number + Number(ratingReq.rating))/ (updateRating.number + 1);
+                    updateRating.number += 1;
 
-                    res.json({message: 'added new word'});
-                });
-            }else {
-                var updateRating = doc[0];
+                    updateRating.save(function(error) {
+                        if (error) {
+                            res.send(500, error);
+                        }
+                    });
+                }
+            });
+        }
 
-                updateRating.rating = (updateRating.rating * updateRating.number + Number(req.body.rating))/ (updateRating.number + 1);
-                updateRating.number += 1;
-
-                updateRating.save(function(error) {
-                    if (error) {
-                        res.send(500, error);
-                    }
-
-                    res.json({message: 'word updated' });
-                });
-            }
-        });
+        res.json({message: 'ratings updated'});
     })
     .get(function(req, res) {
         Rating.find(function(err, doc) {
