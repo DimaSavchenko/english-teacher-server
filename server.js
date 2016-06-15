@@ -29,21 +29,29 @@ router.get('/', function(req, res) {
 
 router.route('/rating')
     .post(function(req, res) {
-        for(var index in req.body) {
-            var ratingReq = req.body[index];
-            Rating.find({word: ratingReq.word}, function(error, doc){
-                if(doc.length == 0) {
+        req.body.forEach(function(ratingReq){
+            var query = {
+                word: ratingReq.word,
+                partOfSpeech: ratingReq.partOfSpeech
+            };
+
+            Rating.findOne(query, function(error, doc){
+                if(doc == null) {
                     var newRating = new Rating();
+
                     newRating.word = ratingReq.word;
+                    newRating.dicNumber = ratingReq.dicNumber;
+                    newRating.partOfSpeech = ratingReq.partOfSpeech;
                     newRating.rating = ratingReq.rating;
                     newRating.number = 1;
+
                     newRating.save(function(error) {
                         if (error) {
                             res.send(500, error);
                         }
                     });
                 }else {
-                    var updateRating = doc[0];
+                    var updateRating = doc;
 
                     updateRating.rating = (updateRating.rating * updateRating.number + Number(ratingReq.rating))/ (updateRating.number + 1);
                     updateRating.number += 1;
@@ -55,7 +63,7 @@ router.route('/rating')
                     });
                 }
             });
-        }
+        });
 
         res.json({message: 'ratings updated'});
     })
