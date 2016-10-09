@@ -76,12 +76,27 @@ router.route('/rating')
         });
     })
     .delete(function (req, res) {
-        Rating.remove({} , function(error) {
-            if (error) {
-                res.send(500, error);
+        Rating.remove({} , function(err) {
+            if (err) {
+                res.send(500, err);
             }
             res.json({message: 'deleted all document'});
         });
+    });
+
+router.route('/ratingToCSV')
+    .get(function (req, res) {
+       Rating.find(function (err, doc) {
+           if (err) {
+               res.send(500, err);
+           }
+
+           var docToCSV = JSON.stringify(doc).replace(/},{/g, ';');
+           docToCSV = docToCSV.replace(/\[{/, '');
+           docToCSV = docToCSV.replace(/}\]/, ';');
+
+           res.json(docToCSV);
+       });
     });
 
 app.use('/', router);
