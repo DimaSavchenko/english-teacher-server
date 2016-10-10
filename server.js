@@ -86,7 +86,7 @@ router.route('/rating')
 
 router.route('/ratingToCSV')
     .get(function (req, res) {
-       Rating.find({number: {$gt: 100}}, function (err, doc) {
+       Rating.find({number: {$gt: 100}}, {'_id': 0, 'number': 0, '__v': 0}, function (err, doc) {
            if (err) {
                res.send(500, err);
            }
