@@ -5,7 +5,7 @@ var express = require('express'),
     morgan = require('morgan'),
     mongoose = require('mongoose'),
     Rating = require('./app/models/rating'),
-    port = Number(process.env.PORT || 8080);
+    port = Number(process.env.PORT || 8000);
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -86,7 +86,7 @@ router.route('/rating')
 
 router.route('/ratingToCSV')
     .get(function (req, res) {
-       Rating.find(function (err, doc) {
+       Rating.find({number: {$gt: 100}}, function (err, doc) {
            if (err) {
                res.send(500, err);
            }
