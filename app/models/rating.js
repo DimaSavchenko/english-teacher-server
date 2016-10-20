@@ -4,7 +4,7 @@ var mongoose= require('mongoose'),
 var RatingSchema = new Schema({
     word: String,
     dicNumber: Number,
-    partOfSpeech: String,
+    partOfSpeech: Number,
     rating: Number,
     number: Number
 });

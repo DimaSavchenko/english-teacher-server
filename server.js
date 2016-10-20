@@ -91,9 +91,18 @@ router.route('/ratingToCSV')
                res.send(500, err);
            }
 
+           console.log(doc[0]);
+           console.log(doc[1]);
            var docToCSV = JSON.stringify(doc).replace(/},{/g, ';');
-           docToCSV = docToCSV.replace(/\[{/, '');
-           docToCSV = docToCSV.replace(/}\]/, ';');
+           docToCSV = docToCSV.replace(/\[{/, '')
+               .replace(/}\]/, ';')
+               .replace(/"rating":/g, '')
+               .replace(/"partOfSpeech":/g, '')
+               .replace(/"dicNumber":/g, '')
+               .replace(/"word":/g, '');
+
+           docToCSV = 'rating,partOfSpeech,dicNumber,word;' + docToCSV;
+
 
            res.json(docToCSV);
        });
