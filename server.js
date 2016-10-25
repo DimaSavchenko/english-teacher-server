@@ -5,7 +5,8 @@ var express = require('express'),
     morgan = require('morgan'),
     mongoose = require('mongoose'),
     Rating = require('./app/models/rating'),
-    port = Number(process.env.PORT || 8000);
+    port = Number(process.env.PORT || 8000),
+    fs = require('fs');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -91,20 +92,20 @@ router.route('/ratingToCSV')
                res.send(500, err);
            }
 
-           console.log(doc[0]);
-           console.log(doc[1]);
            var docToCSV = JSON.stringify(doc).replace(/},{/g, ';');
            docToCSV = docToCSV.replace(/\[{/, '')
                .replace(/}\]/, ';')
                .replace(/"rating":/g, '')
                .replace(/"partOfSpeech":/g, '')
                .replace(/"dicNumber":/g, '')
-               .replace(/"word":/g, '');
+               .replace(/"word":/g, '')
+               .replace(/;/g, ';\n');
 
-           docToCSV = 'rating,partOfSpeech,dicNumber,word;' + docToCSV;
+           docToCSV = 'rating,partOfSpeech,dicNumber,word;\n' + docToCSV;
 
-
-           res.json(docToCSV);
+           fs.writeFile('rating.txt', docToCSV, () => {
+               res.download(__dirname + '/rating.txt');
+           });
        });
     });
 
