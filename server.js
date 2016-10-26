@@ -99,12 +99,14 @@ router.route('/ratingToCSV')
                .replace(/"partOfSpeech":/g, '')
                .replace(/"dicNumber":/g, '')
                .replace(/"word":/g, '')
-               .replace(/;/g, ';\n');
+               .replace(/;/g, ';\n')
+               .replace(/,/g, ';')
+               .replace(/\./g, ',');
 
-           docToCSV = 'rating,partOfSpeech,dicNumber,word;\n' + docToCSV;
+           docToCSV = 'rating;partOfSpeech;dicNumber;word;\n' + docToCSV;
 
-           fs.writeFile('rating.txt', docToCSV, () => {
-               res.download(__dirname + '/rating.txt');
+           fs.writeFile('rating.csv', docToCSV, () => {
+               res.download(__dirname + '/rating.csv');
            });
        });
     });
